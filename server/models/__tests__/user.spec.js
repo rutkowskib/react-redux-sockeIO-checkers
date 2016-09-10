@@ -4,7 +4,7 @@
 import test from 'ava';
 import request from 'supertest';
 import User from '../user';
-import {connectDB} from '../../util/test-helpers';
+import {connectDB, dropDB} from '../../util/test-helpers';
 import app from '../../server';
 
 
@@ -21,15 +21,19 @@ const users = [
   new User(userCredentials[1])
 ];
 
-
 test.beforeEach('connect and try to add user', t => {
   connectDB(t, () => {
-    User.create(users, err => {
+    User.create(users[1], err => {
       if (err) {
         t.fail('Unable to create users');
       }
     });
   });
+});
+
+
+test.afterEach('disconnect and clear db', t => {
+  dropDB(t);
 });
 
 test('Should pass test', t => {

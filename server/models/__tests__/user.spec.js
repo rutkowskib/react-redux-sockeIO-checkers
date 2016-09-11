@@ -23,7 +23,7 @@ const users = [
 
 test.beforeEach('connect and try to add user', t => {
   connectDB(t, () => {
-    User.create(users[1], err => {
+    User.create(users[0], err => {
       if (err) {
         t.fail('Unable to create users');
       }
@@ -45,11 +45,21 @@ test('Test saving user', async t => {
 
   const res = await request(app)
     .post('/api/users/new')
-    .send({user: {username: 'username1', password: 'pw1'}})
+    .send({user: userCredentials[0]})
     .set('Accept', 'application/json');
 
   t.is(res.status, 200);
 
   const newUser = await User.findOne({username: 'username1'}).exec();
-  t.is(newUser.password, 'pw1');
+  t.is(newUser.password, userCredentials[0].password);
+});
+
+test('Test logging in', async t => {
+  const res = await request(app)
+    .post('/api/users/login')
+    .send({user: userCredentials[0]})
+    .set('Accept', 'application/json');
+
+  t.is(res.status, 200);
+  t.truthy(res.body.token);
 });

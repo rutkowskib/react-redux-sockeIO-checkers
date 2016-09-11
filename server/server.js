@@ -143,6 +143,9 @@ app.use((req, res, next) => {
   });
 });
 
+import jwt from './passportJWT';
+jwt(passport);
+
 // start app
 app.listen(serverConfig.port, (error) => {
   if (!error) {

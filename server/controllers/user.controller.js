@@ -26,8 +26,9 @@ export function authenticateUser(req, res) {
   if (!req.body.user.username || !req.body.user.password) {
     res.status(403).end();
   }
+  const userToAuth = req.body.user;
   User.findOne({
-    username: req.body.user.username
+    username: userToAuth.username
   }, (err, user) => {
     if(err) {
       throw err;
@@ -35,11 +36,26 @@ export function authenticateUser(req, res) {
     if(!user) {
       return res.status(403).send({success: false, message: 'User not found'});
     }
-    if(user.password === req.body.user.password) {
-      const token = jwt.encode(user, Config.secret);
-      res.json({success: true, token: `JWT ${token}`});
-    } else {
-      return res.status(403).send({success: false, message: 'Incorrect password'});
-    }
+    user.comparePassword(userToAuth.password, (err, isMatch) => {
+      if(err) {
+        return res.status(403).send({success: false, message: 'Error during password compare'});
+      }
+      if(isMatch) {
+        const token = jwt.encode(user, Config.secret);
+        res.json({success: true, token: `JWT ${token}`});
+      } else {
+        return res.status(403).send({success: false, message: 'Incorrect password'});
+      }
+    });
   });
 }
+
+
+/*
+ if(user.password === req.body.user.password) {
+ const token = jwt.encode(user, Config.secret);
+ res.json({success: true, token: `JWT ${token}`});
+ } else {
+ return res.status(403).send({success: false, message: 'Incorrect password'});
+ }
+ */

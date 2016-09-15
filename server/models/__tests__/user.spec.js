@@ -51,10 +51,15 @@ test('Test saving user', async t => {
   t.is(res.status, 200);
 
   const newUser = await User.findOne({username: 'username1'}).exec();
-  t.is(newUser.password, userCredentials[0].password);
+  t.truthy(newUser);
 });
 
 test('Test logging in', async t => {
+  await request(app)
+    .post('/api/users/new')
+    .send({user: userCredentials[0]})
+    .set('Accept', 'application/json');
+
   const res = await request(app)
     .post('/api/users/login')
     .send({user: userCredentials[0]})

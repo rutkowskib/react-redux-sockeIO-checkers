@@ -2,7 +2,7 @@
  * Created by Bartlomiej Rutkowski on 30.08.16.
  */
 import mongoose from 'mongoose';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -15,29 +15,37 @@ const userSchema = new Schema({
     required: true
   }
 });
-/*
-userSchema.pre('save', (next) => {
-  console.log(this);
+
+userSchema.pre('save', function (next) {
   const user = this;
-  if(this.isModified('password') || this.isNew) {
-    bcrypt.genSalt(10, (err, salt) => {
+  if(user.isModified('password') || user.isNew) {
+    this.hashPassword(user.password, (err, hash) => {
       if(err) {
         return next(err);
       }
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        if(err) {
-          return next(err);
-        }
-        user.password = hash;
-        return next();
-      });
+      user.password = hash;
+      next();
     });
   } else {
     return next();
   }
 });
 
-userSchema.methods.comparePassword = (pw, cb) => {
+userSchema.methods.hashPassword = (candidatePassword, cb) => {
+  bcrypt.genSalt(10, (err, salt) => {
+    if(err) {
+      return cb(err);
+    }
+    bcrypt.hash(candidatePassword, salt, (err, hash) => {
+      if(err) {
+        return cb(err);
+      }
+      return cb(null, hash);
+    });
+  });
+};
+
+userSchema.methods.comparePassword = function (pw, cb) {
   bcrypt.compare(pw, this.password, (err, isMatch) => {
     if(err) {
       return cb(err);
@@ -45,5 +53,5 @@ userSchema.methods.comparePassword = (pw, cb) => {
     cb(null, isMatch);
   });
 };
-*/
+
 export default mongoose.model('User', userSchema);

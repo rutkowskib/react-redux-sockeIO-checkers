@@ -35,3 +35,18 @@ export function callApiGet(URL, query) {
       }
     });
 }
+
+export function callApiPost(URL, body) {
+  return axios
+    .post(`${API_URL}/${URL}`, body);
+}
+
+export function callApiPut(URL, body) {
+  return axios
+    .put(`${API_URL}/${URL}`, body);
+}
+
+export function callApiDelete(URL, body) {
+  return axios
+    .put(`${API_URL}/${URL}`, {body});
+}

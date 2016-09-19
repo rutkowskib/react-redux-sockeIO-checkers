@@ -8,7 +8,7 @@ import jwt from 'jwt-simple';
 
 export function saveUser(req, res) {
   if (!req.body.user.username || !req.body.user.password) {
-    res.status(403).end();
+    res.status(403).send();
   }
   const newUser = new User(req.body.user);
   newUser.username = sanitizeHtml(newUser.username);
@@ -24,7 +24,7 @@ export function saveUser(req, res) {
 
 export function authenticateUser(req, res) {
   if (!req.body.user.username || !req.body.user.password) {
-    res.status(403).end();
+    res.status(403).send();
   }
   const userToAuth = req.body.user;
   User.findOne({

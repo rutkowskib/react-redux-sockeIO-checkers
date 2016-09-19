@@ -6,10 +6,19 @@ import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import App from './App';
 import { configureStore } from './store';
+import {setAuthenticationToken} from './util/auth';
+import CONST from '../CONSTANTS/CONSTANTS'
 
 // Initialize store
 const store = configureStore(window.__INITIAL_STATE__);
 const mountApp = document.getElementById('root');
+
+
+// Set token
+const token = localStorage.getItem(CONST.JWT_TOKEN);
+if(token) {
+  setAuthenticationToken(token);
+}
 
 render(
   <AppContainer>

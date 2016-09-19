@@ -10,8 +10,8 @@ import rootReducer from './reducers';
 export function configureStore(initialState = {}) {
   // Middleware and store enhancers
   const enhancers = [
-    applyMiddleware(promise()),
-    applyMiddleware(thunk)
+    applyMiddleware(thunk),
+    applyMiddleware(promise())
   ];
 
   if (process.env.CLIENT && process.env.NODE_ENV === 'development') {

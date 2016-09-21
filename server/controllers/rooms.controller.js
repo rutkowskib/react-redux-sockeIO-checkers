@@ -1,57 +1,36 @@
 /**
  * Created by Bartlomiej Rutkowski on 21.09.16.
  */
-import CONST from '../../CONSTANTS/CONSTANTS';
+import rooms from '../models/rooms';
+import ERRORS from '../../CONSTANTS/ERRORS';
 
-const rooms = (function () {
-  let rooms = [];
+export function createRoom(req, res) {
+  const user = req.body && req.body.user;
+  if(!user) {
+    res.status(400).send({success: false, errorType: ERRORS.MISSING_FIELDS});
+  }
+  const room = rooms.createRoom(user);
+  res.status(200).send({success: true, room});
+}
 
-  const createRoom = newUser => {
-    const idLength = 10;
-    const id = Math.random().toString(36).slice(idLength);
-    const user = {
-      ...newUser,
-      status: CONST.SPECTATOR
-    };
-    const room = {
-      id,
-      users: [user],
-      gameInProgress: false
-    };
-    rooms.push(room);
-  };
+export function joinRoom(req, res) {
+  const {roomId, user} = req.body;
+  if(!roomId || !user) {
+    res.status(400).send({success: false, errorType: ERRORS.MISSING_FIELDS});
+  }
+  rooms.joinRoom(user, roomId);
+  res.status(200).send({success: true});
+}
 
-  const joinRoom = (user, roomId) => {
-    rooms = rooms.map(room => {
-      if(room.id !== roomId) {
-        return room;
-      } else {
-        room.users.push(user);
-        return room;
-      }
-    });
-  };
-
-  const leaveRoom = (userToLeave, roomId) => {
-    rooms = rooms.map(room => {
-      if(room.id !== roomId) {
-        return room;
-      } else {
-        return room.users.filter(user => {
-          return user.username === userToLeave.username;
-        });
-      }
-    });
-  };
-
-  const getRooms = () => rooms;
-
-  return {
-    createRoom,
-    joinRoom,
-    leaveRoom,
-    getRooms
-  };
-}());
-
-export default rooms;
+export function leaveRoom(req, res) {
+  const {roomId, user} = req.body;
+  if(!roomId || !user) {
+    res.status(400).send({success: false, errorType: ERRORS.MISSING_FIELDS});
+  }
+  const success = rooms.leaveRoom(user, roomId);
+  res.status(200).send({success});
+}
+export function getRooms(req, res) {
+  const roomsArray = rooms.getRooms();
+  res.status(200).send({success: true, rooms: roomsArray});
+}

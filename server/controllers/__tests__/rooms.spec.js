@@ -3,7 +3,8 @@
  */
 import test from 'ava';
 import request from 'supertest';
-import app from '../../server';
+import {getApp} from '../../util/test-helpers';
+const app = getApp();
 
 /*
 const userCredentials = [{
@@ -27,4 +28,5 @@ test('Should return empty array', async t => {
   t.is(res.status, 200);
   t.true(res.body.rooms);
   t.true(!res.body.rooms.length);
+  t.pass();
 });

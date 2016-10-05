@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
+import app from '../server';
 
 export function connectDB(t, done) {
   mockgoose(mongoose).then(() => {
@@ -14,4 +15,12 @@ export function dropDB(t) {
   mockgoose.reset(err => {
     if (err) t.fail('Unable to reset test database');
   });
+}
+
+export function createRandomString(length = 8) {
+  return Math.random().toString(36).substring(length);
+}
+
+export function getApp() {
+  return app;
 }

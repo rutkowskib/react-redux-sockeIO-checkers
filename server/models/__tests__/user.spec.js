@@ -4,33 +4,14 @@
 import test from 'ava';
 import request from 'supertest';
 import User from '../user';
-import {connectDB, dropDB} from '../../util/test-helpers';
-import app from '../../server';
-
-
-const userCredentials = [{
-  username: 'username1',
-  password: 'password1'
-}, {
-  username: 'username2',
-  password: 'password2'
-}];
-
-const users = [
-  new User(userCredentials[0]),
-  new User(userCredentials[1])
-];
+import {connectDB, dropDB, createRandomString, getApp} from '../../util/test-helpers';
+const app = getApp();
 
 test.beforeEach('connect and try to add user', t => {
   connectDB(t, () => {
-    User.create(users[0], err => {
-      if (err) {
-        t.fail('Unable to create users');
-      }
-    });
+
   });
 });
-
 
 test.afterEach('disconnect and clear db', t => {
   dropDB(t);
@@ -42,29 +23,42 @@ test('Should pass test', t => {
 
 test('Test saving user', async t => {
   t.plan(2);
-
-  const res = await request(app)
-    .post('/api/users/new')
-    .send({user: userCredentials[0]})
-    .set('Accept', 'application/json');
+  const user = createRandomUser();
+  const res = await sendAddUserRequest(user);
 
   t.is(res.status, 200);
-
-  const newUser = await User.findOne({username: 'username1'}).exec();
+  const newUser = await User.findOne({username: user.username}).exec();
   t.truthy(newUser);
 });
 
 test('Test logging in', async t => {
-  await request(app)
-    .post('/api/users/new')
-    .send({user: userCredentials[0]})
-    .set('Accept', 'application/json');
-
-  const res = await request(app)
-    .post('/api/users/login')
-    .send({user: userCredentials[0]})
-    .set('Accept', 'application/json');
+  const user = createRandomUser();
+  await sendAddUserRequest(user);
+  const res = await sendLoginRequest(user);
 
   t.is(res.status, 200);
   t.truthy(res.body.token);
 });
+
+function createRandomUser() {
+  const username = createRandomString();
+  const password = createRandomString();
+  return {
+    username,
+    password
+  };
+}
+
+function sendAddUserRequest(user) {
+  return request(app)
+    .post('/api/users/new')
+    .send({user})
+    .set('Accept', 'application/json');
+}
+
+function sendLoginRequest(user) {
+  return request(app)
+    .post('/api/users/login')
+    .send({user})
+    .set('Accept', 'application/json');
+}

@@ -3,22 +3,18 @@
  */
 import test from 'ava';
 import request from 'supertest';
-import {getApp} from '../../util/test-helpers';
-const app = getApp();
+import {connectDB, dropDB} from '../../util/test-helpers';
+import app from '../../server';
 
-/*
-const userCredentials = [{
-  username: 'username1',
-  password: 'password1'
-}, {
-  username: 'username2',
-  password: 'password2'
-}];
+test.before('connect and try to add user', t => {
+  connectDB(t, () => {
 
-const users = [
-  new User(userCredentials[0]),
-  new User(userCredentials[1])
-]; */
+  });
+});
+
+test.after('disconnect and clear db', t => {
+  dropDB(t);
+});
 
 test('Should return empty array', async t => {
   const res = await request(app)
@@ -26,7 +22,7 @@ test('Should return empty array', async t => {
     .set('Accept', 'application/json');
 
   t.is(res.status, 200);
-  t.true(res.body.rooms);
-  t.true(!res.body.rooms.length);
+  t.truthy(res.body.rooms);
+  t.truthy(!res.body.rooms.length);
   t.pass();
 });

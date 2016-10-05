@@ -4,16 +4,16 @@
 import test from 'ava';
 import request from 'supertest';
 import User from '../user';
-import {connectDB, dropDB, createRandomString, getApp} from '../../util/test-helpers';
-const app = getApp();
+import {connectDB, dropDB, createRandomString} from '../../util/test-helpers';
+import app from '../../server';
 
-test.beforeEach('connect and try to add user', t => {
+test.before('connect and try to add user', t => {
   connectDB(t, () => {
 
   });
 });
 
-test.afterEach('disconnect and clear db', t => {
+test.after('disconnect and clear db', t => {
   dropDB(t);
 });
 

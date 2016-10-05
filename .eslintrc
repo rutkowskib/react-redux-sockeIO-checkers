@@ -44,6 +44,7 @@
     "consistent-return": 0,
     "no-use-before-define": ["error", { "functions": false, "classes": true }],
     "no-else-return": 0,
-    "func-names": 0
+    "func-names": 0,
+    "ava/use-true-false" : 0
   }
 }

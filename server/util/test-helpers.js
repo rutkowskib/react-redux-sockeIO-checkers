@@ -21,6 +21,15 @@ export function createRandomString(length = 8) {
   return Math.random().toString(36).substring(length);
 }
 
+export function createRandomUser() {
+  const username = createRandomString();
+  const password = createRandomString();
+  return {
+    username,
+    password
+  };
+}
+
 export function getApp() {
   return app;
 }

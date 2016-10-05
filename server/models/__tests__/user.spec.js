@@ -4,7 +4,7 @@
 import test from 'ava';
 import request from 'supertest';
 import User from '../user';
-import {connectDB, dropDB, createRandomString} from '../../util/test-helpers';
+import {connectDB, dropDB, createRandomUser} from '../../util/test-helpers';
 import app from '../../server';
 
 test.before('connect and try to add user', t => {
@@ -39,15 +39,6 @@ test('Test logging in', async t => {
   t.is(res.status, 200);
   t.truthy(res.body.token);
 });
-
-function createRandomUser() {
-  const username = createRandomString();
-  const password = createRandomString();
-  return {
-    username,
-    password
-  };
-}
 
 function sendAddUserRequest(user) {
   return request(app)

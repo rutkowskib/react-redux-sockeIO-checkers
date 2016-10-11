@@ -25,39 +25,24 @@ test.serial('Should return empty array', async t => {
 });
 
 test('Should create empty room', async t => {
-  const user = createRandomUser();
-  await sendCreateRoomRequest(user);
+  await createRoomWithUser();
   const roomsRes = await sendGetRoomsRequest();
-
-  t.truthy(roomsRes.body.rooms);
-  t.truthy(roomsRes.body.rooms.length);
+  checkIfThereIsRoom(t, roomsRes);
 });
 
 test('Should join room', async t => {
   const user = createRandomUser();
   await sendCreateRoomRequest(user);
-  const getRoomsRes = await sendGetRoomsRequest();
-  const rooms = getRoomsRes.body.rooms && getRoomsRes.body.rooms;
-  t.truthy(rooms);
-  const room = rooms[0];
-  const res = await sendJoinRoomRequest(user, room.id);
-
-  t.is(res.status, 200);
+  const room = checkIfAnyRoomExistsAndReturnOne(t);
+  joinAndCheckIfSuccessful(t, user, room);
 });
 
 test('Should leave room', async t => {
   const user = createRandomUser();
   await sendCreateRoomRequest(user);
-  const getRoomsRes = await sendGetRoomsRequest();
-  const rooms = getRoomsRes.body.rooms && getRoomsRes.body.rooms;
-  const room = rooms[0];
-  const roomId = room.id;
-  const joinRes = await sendJoinRoomRequest(user, roomId);
-  t.is(joinRes.status, 200);
-  t.true(joinRes.body.success);
-
-  const res = await sendLeaveRoomRequest(user, roomId);
-  t.is(res.status, 200);
+  const room = checkIfAnyRoomExistsAndReturnOne(t);
+  await joinAndCheckIfSuccessful(t, user, room);
+  leaveAndCheckIfSuccessful(t, user, room);
 });
 
 function sendGetRoomsRequest() {
@@ -85,4 +70,39 @@ function sendLeaveRoomRequest(user, roomId) {
     .delete('/api/rooms/leave')
     .send({user, roomId})
     .set('Accept', 'application/json');
+}
+
+function createRoomWithUser(user = null) {
+  const userToSend = user || createRandomUser();
+  return sendCreateRoomRequest(userToSend);
+}
+
+function checkIfThereIsRoom(t, response) {
+  t.truthy(response.body.rooms);
+  t.truthy(response.body.rooms.length);
+}
+
+function checkIfAnyRoomExistsAndReturnOne(t) {
+  return sendGetRoomsRequest()
+    .then(response => {
+      const rooms = response.body.rooms && response.body.rooms;
+      t.truthy(rooms);
+      return rooms[0];
+    });
+}
+
+function joinAndCheckIfSuccessful(t, user, room) {
+  sendJoinRoomRequest(user, room.id)
+    .then(res => {
+      t.is(res.status, 200);
+      t.true(res.body.success);
+    });
+}
+
+function leaveAndCheckIfSuccessful(t, room, user) {
+  const roomId = room.id;
+  sendLeaveRoomRequest(user, roomId)
+    .then(res => {
+      t.is(res.status, 200);
+    });
 }

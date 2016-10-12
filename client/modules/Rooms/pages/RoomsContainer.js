@@ -14,15 +14,16 @@ export class RoomsContainer extends React.Component {
   render() {
     return(
       <div>
-        <RoomsList />
+        <RoomsList rooms={this.props.rooms.rooms} />
       </div>
     );
   }
 }
 
-function mapStateToProps() {
+function mapStateToProps(state) {
+  const {rooms} = state;
   return {
-
+    rooms
   };
 }
 
@@ -33,7 +34,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 RoomsContainer.propTypes = {
-  getRooms: React.PropTypes.func
+  getRooms: React.PropTypes.func,
+  rooms: React.PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomsContainer);

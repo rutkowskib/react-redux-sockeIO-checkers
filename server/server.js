@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 import passport from 'passport';
+import passportJwt, {authenticateWithToken} from './passportJWT';
 
 // Webpack Requirements
 import webpack from 'webpack';
@@ -58,8 +59,13 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist')));
 app.use(passport.initialize());
+passportJwt(passport);
+
+
 app.use('/api/', users);
-app.use('/api/', rooms);
+app.use('/api/rooms', authenticateWithToken);
+
+app.use('/api/rooms', rooms);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -142,9 +148,6 @@ app.use((req, res, next) => {
       .catch((error) => next(error));
   });
 });
-
-import jwt from './passportJWT';
-jwt(passport);
 
 // start app
 app.listen(serverConfig.port, (error) => {

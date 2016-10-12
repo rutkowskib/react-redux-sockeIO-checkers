@@ -4,11 +4,12 @@
 import PassportJwt from 'passport-jwt';
 import User from './models/user';
 import Config from './config';
+import jwt from 'jwt-simple';
 
 const JwtStrategy = PassportJwt.Strategy;
 const ExtractJwt = PassportJwt.ExtractJwt;
 
-module.exports = function (passport) {
+export default function (passport) {
   const opts = {};
   opts.secretOrKey = Config.secret;
   opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
@@ -24,5 +25,35 @@ module.exports = function (passport) {
       }
     });
   }));
-};
+}
 
+export function getToken(headers) {
+  if(headers && headers.authorization) {
+    const parted = headers.authorization.split(' ');
+    if(parted.length === 3) {
+      return parted[2];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+}
+
+export function authenticateWithToken(req, res, next) {
+  const token = getToken(req.headers);
+  if(token) {
+    const decoded = jwt.decode(token, Config.secret);
+    User.findOne({
+      name: decoded.name
+    }, (err, user) => {
+      if(err) throw err;
+      if(!user) {
+        res.status(403).send({success: false, msg: 'No user'});
+      }
+      next();
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'No token'});
+  }
+}

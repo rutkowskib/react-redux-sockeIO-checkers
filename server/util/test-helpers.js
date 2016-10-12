@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import mockgoose from 'mockgoose';
 import app from '../server';
+import request from 'supertest';
 
 export function connectDB(t, done) {
   mockgoose(mongoose).then(() => {
@@ -30,6 +31,16 @@ export function createRandomUser() {
   };
 }
 
-export function getApp() {
-  return app;
+export function sendRegisterUserRequest(user) {
+  return request(app)
+    .post('/api/users/new')
+    .send({user})
+    .set('Accept', 'application/json');
+}
+
+export function sendLoginRequest(user) {
+  return request(app)
+    .post('/api/users/login')
+    .send({user})
+    .set('Accept', 'application/json');
 }

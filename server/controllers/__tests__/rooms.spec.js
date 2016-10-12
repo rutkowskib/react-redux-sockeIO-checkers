@@ -3,43 +3,54 @@
  */
 import test from 'ava';
 import request from 'supertest';
-import {connectDB, dropDB, createRandomUser} from '../../util/test-helpers';
+import {connectDB, dropDB, createRandomUser, sendRegisterUserRequest, sendLoginRequest} from '../../util/test-helpers';
 import app from '../../server';
 
-test.before('connect', t => {
-  connectDB(t, () => {
+const user = createRandomUser();
+let token;
+
+test.before('connect', async t => {
+  await connectDB(t, () => {
 
   });
+  await sendRegisterUserRequest(user);
+  const res = await sendLoginRequest(user);
+  token = res.body.token;
 });
 
 test.after('disconnect and clear db', t => {
   dropDB(t);
 });
 
+/*
+test.serial('Should return 403 status', async t => {
+  const res = await sendGetRoomsRequest();
+  t.is(res.status, 403);
+});*/
+
 test.serial('Should return empty array', async t => {
   const res = await sendGetRoomsRequest();
-
   t.is(res.status, 200);
   t.truthy(res.body.rooms);
   t.truthy(!res.body.rooms.length);
 });
 
 test('Should create empty room', async t => {
-  await createRoomWithUser();
+  await createRoomWithUser(t);
   const roomsRes = await sendGetRoomsRequest();
   checkIfThereIsRoom(t, roomsRes);
 });
 
 test('Should join room', async t => {
   const user = createRandomUser();
-  await sendCreateRoomRequest(user);
+  await createRoomWithUser(t, user);
   const room = checkIfAnyRoomExistsAndReturnOne(t);
   joinAndCheckIfSuccessful(t, user, room);
 });
 
 test('Should leave room', async t => {
   const user = createRandomUser();
-  await sendCreateRoomRequest(user);
+  await createRoomWithUser(t, user);
   const room = checkIfAnyRoomExistsAndReturnOne(t);
   await joinAndCheckIfSuccessful(t, user, room);
   leaveAndCheckIfSuccessful(t, user, room);
@@ -48,33 +59,40 @@ test('Should leave room', async t => {
 function sendGetRoomsRequest() {
   return request(app)
     .get('/api/rooms/get')
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('Authorization', `Bearer ${token}`);
 }
 
 function sendCreateRoomRequest(user) {
   return request(app)
     .post('/api/rooms/new')
     .send({user})
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('Authorization', `Bearer ${token}`);
 }
 
 function sendJoinRoomRequest(user, roomId) {
   return request(app)
     .put('/api/rooms/join')
     .send({user, roomId})
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('Authorization', `Bearer ${token}`);
 }
 
 function sendLeaveRoomRequest(user, roomId) {
   return request(app)
     .delete('/api/rooms/leave')
     .send({user, roomId})
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('Authorization', `Bearer ${token}`);
 }
 
-function createRoomWithUser(user = null) {
+function createRoomWithUser(t, user = null) {
   const userToSend = user || createRandomUser();
-  return sendCreateRoomRequest(userToSend);
+  sendCreateRoomRequest(userToSend)
+    .then(res => {
+      t.is(res.status, 200);
+    });
 }
 
 function checkIfThereIsRoom(t, response) {
@@ -85,6 +103,7 @@ function checkIfThereIsRoom(t, response) {
 function checkIfAnyRoomExistsAndReturnOne(t) {
   return sendGetRoomsRequest()
     .then(response => {
+      t.is(response.status, 200);
       const rooms = response.body.rooms && response.body.rooms;
       t.truthy(rooms);
       return rooms[0];

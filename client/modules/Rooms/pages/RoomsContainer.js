@@ -4,7 +4,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {RoomsList} from '../components/RoomsList';
-import {getRooms} from '../RoomsActions';
+import {getRooms, createRoom} from '../RoomsActions';
 
 export class RoomsContainer extends React.Component {
   componentDidMount() {
@@ -15,6 +15,7 @@ export class RoomsContainer extends React.Component {
     return(
       <div>
         <RoomsList rooms={this.props.rooms.rooms} />
+        <button onClick={this.props.createRoom}>Create new room</button>
       </div>
     );
   }
@@ -29,12 +30,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getRooms: () => dispatch(getRooms())
+    getRooms: () => dispatch(getRooms()),
+    createRoom: () => dispatch(createRoom())
   };
 }
 
 RoomsContainer.propTypes = {
   getRooms: React.PropTypes.func,
+  createRoom: React.PropTypes.func,
   rooms: React.PropTypes.object
 };
 

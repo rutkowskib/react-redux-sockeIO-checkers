@@ -3,7 +3,8 @@
  */
 const API_POST = {
   REGISTER_USER: '/users/new',
-  AUTHENTICATE_USER: 'users/login'
+  AUTHENTICATE_USER: 'users/login',
+  CREATE_ROOM: 'rooms/new'
 };
 
 export default API_POST;

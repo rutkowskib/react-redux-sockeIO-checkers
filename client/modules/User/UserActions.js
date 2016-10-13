@@ -29,7 +29,7 @@ export function authenticateUser(user) {
 
 function afterSuccessfulAuthenticationRequest(response) {
   return dispatch => {
-    const data = response.data
+    const data = response.data;
     const token = data.token;
     const user = data.user;
     localStorage.setItem(CONST.JWT_TOKEN, token);

@@ -1,3 +1,8 @@
+@import 'constants';
+
+// User modules styles
+@import '../modules/User/components/RegisterPage.scss';
+
 *{
   margin: 0;
   padding: 0;
@@ -26,6 +31,17 @@ input:-moz-placeholder {
 
 body {
   background: #FFF;
-  font-family: 'Lato', sans-serif;
+  font-family: $fontOswald;
   font-size: 16px;
+}
+
+button {
+  text-align: center;
+  border: 0;
+  padding: 10px 0;
+  font-weight: bold;
+  margin: 0 auto;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
 }

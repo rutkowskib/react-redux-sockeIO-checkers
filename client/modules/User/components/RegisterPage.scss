@@ -1,0 +1,24 @@
+@import "../../../styles/constants";
+
+.registerPage {
+  width: $customContainerWidthFullHD;
+  h1 {
+    text-align: center;
+  }
+  .inputsContainer {
+    margin: 0 auto;
+    width: 40%;
+    input {
+      margin: 10px 0 10px 0;
+      display: block;
+      height: 30px;
+      width: 100%;
+    }
+    button {
+      background-color: #00A2D3;
+      color: white;
+      float: right;
+    }
+  }
+
+}

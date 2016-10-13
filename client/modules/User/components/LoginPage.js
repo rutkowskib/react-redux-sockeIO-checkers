@@ -18,6 +18,7 @@ export function LoginPage(props) {
         placeholder={'password'}
         value={props.state.password}
         onChange={functions.handleChange.bind(this, 'password')}
+        type="password"
       />
       <button onClick={functions.authenticateUser}>Log in</button>
       <Link to="/register/">

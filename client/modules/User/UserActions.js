@@ -5,7 +5,7 @@ import CONST from '../../../CONSTANTS/CONSTANTS';
 import REDUX_CONST from '../../../CONSTANTS/Redux/User';
 import API_POST from '../../../CONSTANTS/API/POST';
 import {callApiPost} from '../../util/apiCaller';
-import {setAuthenticationToken} from '../../util/auth';
+import {setAuthenticationToken, moveToLoggedInSection} from '../../util/auth';
 
 export function registerUser(user) {
   return {
@@ -41,6 +41,7 @@ function afterFailedAuthenticationRequest(response) {
 }
 
 function login() {
+  moveToLoggedInSection();
   return {
     type: REDUX_CONST.LOGIN
   };

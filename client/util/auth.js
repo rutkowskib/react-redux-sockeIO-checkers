@@ -2,6 +2,7 @@
  * Created by Bartlomiej Rutkowski on 19.09.16.
  */
 import axios from 'axios';
+import {browserHistory} from 'react-router';
 
 export function setAuthenticationToken(token) {
   if(token) {
@@ -9,4 +10,8 @@ export function setAuthenticationToken(token) {
   } else {
     delete axios.defaults.headers.common.Authorization;
   }
+}
+
+export function moveToLoggedInSection() {
+  browserHistory.push('rooms/');
 }

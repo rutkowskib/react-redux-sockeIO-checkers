@@ -42,7 +42,7 @@ export function authenticateUser(req, res) {
       }
       if(isMatch) {
         const token = jwt.encode(user, Config.secret);
-        res.json({success: true, token: `JWT ${token}`});
+        res.json({success: true, token: `JWT ${token}`, user});
       } else {
         return res.status(403).send({success: false, message: 'Incorrect password'});
       }

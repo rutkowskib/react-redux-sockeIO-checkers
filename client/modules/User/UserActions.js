@@ -29,10 +29,12 @@ export function authenticateUser(user) {
 
 function afterSuccessfulAuthenticationRequest(response) {
   return dispatch => {
-    const token = response.data.token;
+    const data = response.data
+    const token = data.token;
+    const user = data.user;
     localStorage.setItem(CONST.JWT_TOKEN, token);
     setAuthenticationToken(token);
-    dispatch(login());
+    dispatch(login(user));
   };
 }
 
@@ -40,9 +42,10 @@ function afterFailedAuthenticationRequest(response) {
   return response;
 }
 
-function login() {
+function login(user) {
   moveToLoggedInSection();
   return {
-    type: REDUX_CONST.LOGIN
+    type: REDUX_CONST.LOGIN,
+    user
   };
 }

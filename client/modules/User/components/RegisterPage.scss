@@ -2,6 +2,7 @@
 
 .registerPage {
   width: $customContainerWidthFullHD;
+  float: none;
   h1 {
     text-align: center;
   }
@@ -20,5 +21,4 @@
       float: right;
     }
   }
-
 }

@@ -1,0 +1,27 @@
+@import "../../../styles/constants";
+
+.loginPage{
+  width: $customContainerWidthFullHD;
+  text-align: center;
+  .inputsContainer {
+    width: 100%;
+    .inputs{
+      width: 40%;
+      margin: 0 auto;
+      input{
+        display: block;
+        width: 100%;
+        height: 25px;
+      }
+      button{
+        width: 80px;
+        margin: 0 auto;
+        float: right;
+      }
+    }
+  }
+  a{
+    color: #000000;
+    text-decoration: none;
+  }
+}

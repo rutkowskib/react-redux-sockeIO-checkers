@@ -7,5 +7,6 @@ const router = new Router();
 
 router.route('/users/new').post(UserController.saveUser);
 router.route('/users/login').post(UserController.authenticateUser);
+router.route('/users/auth').post(UserController.loginWithToken);
 
 export default router;

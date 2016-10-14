@@ -5,6 +5,7 @@ import User from '../models/user';
 import sanitizeHtml from 'sanitize-html';
 import Config from '../config';
 import jwt from 'jwt-simple';
+import {checkToken} from '../passportJWT';
 
 export function saveUser(req, res) {
   if (!req.body.user.username || !req.body.user.password) {
@@ -23,7 +24,7 @@ export function saveUser(req, res) {
 }
 
 export function authenticateUser(req, res) {
-  if (!req.body.user.username || !req.body.user.password) {
+  if (!req.body.user || !req.body.user.username || !req.body.user.password) {
     res.status(403).send();
   }
   const userToAuth = req.body.user;
@@ -50,12 +51,16 @@ export function authenticateUser(req, res) {
   });
 }
 
-
-/*
- if(user.password === req.body.user.password) {
- const token = jwt.encode(user, Config.secret);
- res.json({success: true, token: `JWT ${token}`});
- } else {
- return res.status(403).send({success: false, message: 'Incorrect password'});
- }
- */
+export function loginWithToken(req, res) {
+  const token = req.body.token;
+  if(!token) {
+    res.status(403).send({msg: 'Token not found'});
+  }
+  const loginSuccessful = (user) => {
+    res.json({success: true, token: `JWT ${token}`, user});
+  };
+  const loginUnsuccessful = (msg) => {
+    res.status(403).send({msg});
+  };
+  checkToken(token, loginSuccessful, loginUnsuccessful);
+}

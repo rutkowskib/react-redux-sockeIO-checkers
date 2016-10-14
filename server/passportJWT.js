@@ -29,12 +29,7 @@ export default function (passport) {
 
 export function getToken(headers) {
   if(headers && headers.authorization) {
-    const parted = headers.authorization.split(' ');
-    if(parted.length === 3) {
-      return parted[2];
-    } else {
-      return null;
-    }
+    return getTokenFromTokenString(headers.authorization);
   } else {
     return null;
   }
@@ -55,5 +50,35 @@ export function authenticateWithToken(req, res, next) {
     });
   } else {
     return res.status(403).send({success: false, msg: 'No token'});
+  }
+}
+
+export function checkToken(tokenString, loginSuccessful, loginUnsuccessful) {
+  const token = getTokenFromTokenString(tokenString);
+  if(token) {
+    const decoded = jwt.decode(token, Config.secret);
+    User.findOne({
+      name: decoded.name
+    }, (err, user) => {
+      if(err) throw err;
+      if(!user) {
+        const noUserMessage = 'No user';
+        loginUnsuccessful(noUserMessage);
+      }
+      loginSuccessful(user);
+    });
+  } else {
+    const badFormatTokenMessage = 'Bad token format';
+    loginUnsuccessful(badFormatTokenMessage);
+  }
+}
+
+function getTokenFromTokenString(tokenString) {
+  const parted = tokenString.split(' ');
+  const length = parted.length;
+  if(length >= 2) {
+    return parted[length - 1];
+  } else {
+    return null;
   }
 }

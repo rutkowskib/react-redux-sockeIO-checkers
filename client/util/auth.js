@@ -15,3 +15,12 @@ export function setAuthenticationToken(token) {
 export function moveToLoggedInSection() {
   browserHistory.push('rooms/');
 }
+
+export function moveToMainPage() {
+  browserHistory.push('/');
+}
+
+export function deleteToken() {
+  localStorage.clear();
+  setAuthenticationToken();
+}

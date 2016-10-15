@@ -5,6 +5,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import IntlWrapper from './modules/Intl/IntlWrapper';
+import AuthorizationWrapper from './modules/User/AuthorizationWrapper';
 
 // Import Routes
 import routes from './routes';
@@ -16,9 +17,11 @@ export default function App(props) {
   return (
     <Provider store={props.store}>
       <IntlWrapper>
-        <Router history={browserHistory}>
-          {routes}
-        </Router>
+        <AuthorizationWrapper>
+          <Router history={browserHistory}>
+            {routes}
+          </Router>
+        </AuthorizationWrapper>
       </IntlWrapper>
     </Provider>
   );

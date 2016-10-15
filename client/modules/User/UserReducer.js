@@ -23,6 +23,10 @@ const UserReducer = (state = {}, action) => {
         ...action.user,
         isAuthenticated: true
       };
+    case REDUX_CONST.LOGOUT:
+      return {
+        isAuthenticated: false
+      };
     default:
       return {
         ...state

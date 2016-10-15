@@ -9,7 +9,7 @@ export function LoginPage(props) {
   return(
     <div className="loginPage">
       <h1>Welcome to checkers online</h1>
-      <div className="inputsContainer inputs">
+      <div className="inputsContainer">
         <div className="inputs">
           <input
             placeholder={'username'}

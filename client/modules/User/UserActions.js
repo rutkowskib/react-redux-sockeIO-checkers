@@ -5,7 +5,7 @@ import CONST from '../../../CONSTANTS/CONSTANTS';
 import REDUX_CONST from '../../../CONSTANTS/Redux/User';
 import API_POST from '../../../CONSTANTS/API/POST';
 import {callApiPost} from '../../util/apiCaller';
-import {setAuthenticationToken, moveToLoggedInSection} from '../../util/auth';
+import {setAuthenticationToken, moveToLoggedInSection, moveToMainPage, deleteToken} from '../../util/auth';
 
 export function registerUser(user) {
   return {
@@ -42,10 +42,32 @@ function afterFailedAuthenticationRequest(response) {
   return response;
 }
 
+export function authenticateWithToken() {
+  const token = localStorage.getItem(CONST.JWT_TOKEN);
+  return dispatch => dispatch({
+    type: REDUX_CONST.AUTHENTICATE_WITH_TOKEN,
+    payload: callApiPost(API_POST.AUTHENTICATE_WITH_TOKEN, {token})
+      .then(response => {
+        dispatch(afterSuccessfulAuthenticationRequest(response));
+      })
+      .catch(() => {
+        dispatch(logout);
+      })
+  });
+}
+
 function login(user) {
   moveToLoggedInSection();
   return {
     type: REDUX_CONST.LOGIN,
     user
+  };
+}
+
+function logout() {
+  moveToMainPage();
+  deleteToken();
+  return {
+    type: REDUX_CONST.LOGOUT
   };
 }

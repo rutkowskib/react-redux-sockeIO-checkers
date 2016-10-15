@@ -8,6 +8,11 @@
     .inputs{
       width: 40%;
       margin: 0 auto;
+      &:after {
+        display: table;
+        clear: both;
+        content: '';
+      }
       input{
         display: block;
         width: 100%;

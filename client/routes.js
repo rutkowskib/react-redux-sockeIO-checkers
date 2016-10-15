@@ -19,10 +19,12 @@ if (process.env.NODE_ENV !== 'production') {
   require('./modules/User/pages/LoginPageContainer');
   require('./modules/User/pages/RegisterPageContainer');
   require('./modules/Rooms/pages/RoomsContainer');
+  require('./modules/Rooms/pages/RoomContainer');
 }
 
 // pages
 import RoomsContainer from './modules/Rooms/pages/RoomsContainer';
+import RoomContainer from './modules/Rooms/pages/RoomContainer';
 
 // react-router setup with code-splitting
 // More info: http://blog.mxstbr.com/2016/01/react-apps-with-pages/
@@ -44,5 +46,6 @@ export default (
       }}
     />
     <Route path="/rooms/" component={RoomsContainer} />
+    <Route path="/room/:roomId" component={RoomContainer} />
   </Route>
 );

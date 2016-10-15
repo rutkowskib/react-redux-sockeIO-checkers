@@ -3,7 +3,7 @@
  */
 import React from 'react';
 
-export function Room(props) {
+export function RoomListOneRoom(props) {
   return(
     <div>
       ROOM
@@ -12,6 +12,6 @@ export function Room(props) {
   );
 }
 
-Room.propTypes = {
+RoomListOneRoom.propTypes = {
   room: React.PropTypes.object
 };

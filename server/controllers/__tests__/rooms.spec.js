@@ -22,12 +22,6 @@ test.after('disconnect and clear db', t => {
   dropDB(t);
 });
 
-/*
-test.serial('Should return 403 status', async t => {
-  const res = await sendGetRoomsRequest();
-  t.is(res.status, 403);
-});*/
-
 test.serial('Should return empty array', async t => {
   const res = await sendGetRoomsRequest();
   t.is(res.status, 200);

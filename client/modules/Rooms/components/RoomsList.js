@@ -2,13 +2,13 @@
  * Created by Bartlomiej Rutkowski on 12.10.16.
  */
 import React from 'react';
-import {Room} from './Room';
+import {RoomListOneRoom} from './Room';
 import shortid from 'shortid';
 
 export function RoomsList(props) {
   const rooms = props.rooms.map(room => {
     return(
-      <Room room={room} key={shortid.generate()} />
+      <RoomListOneRoom room={room} key={shortid.generate()} />
     );
   });
   return(

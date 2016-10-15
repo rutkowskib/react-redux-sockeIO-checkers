@@ -13,7 +13,7 @@ export function setAuthenticationToken(token) {
 }
 
 export function moveToLoggedInSection() {
-  browserHistory.push('rooms/');
+  browserHistory.push('/rooms/');
 }
 
 export function moveToMainPage() {

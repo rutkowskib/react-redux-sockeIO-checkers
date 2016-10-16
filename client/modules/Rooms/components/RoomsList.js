@@ -2,7 +2,7 @@
  * Created by Bartlomiej Rutkowski on 12.10.16.
  */
 import React from 'react';
-import {RoomListOneRoom} from './Room';
+import {RoomListOneRoom} from './RoomListOneRoom';
 import shortid from 'shortid';
 
 export function RoomsList(props) {

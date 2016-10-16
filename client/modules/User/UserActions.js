@@ -6,6 +6,7 @@ import REDUX_CONST from '../../../CONSTANTS/Redux/User';
 import API_POST from '../../../CONSTANTS/API/POST';
 import {callApiPost} from '../../util/apiCaller';
 import {setAuthenticationToken, moveToLoggedInSection, moveToMainPage, deleteToken} from '../../util/auth';
+import SocketIO from '../../util/SocketIO';
 
 export function registerUser(user) {
   return {
@@ -35,6 +36,7 @@ function afterSuccessfulAuthenticationRequest(response) {
     localStorage.setItem(CONST.JWT_TOKEN, token);
     setAuthenticationToken(token);
     dispatch(login(user));
+    dispatch(connectToSocket(user));
   };
 }
 
@@ -69,5 +71,14 @@ function logout() {
   deleteToken();
   return {
     type: REDUX_CONST.LOGOUT
+  };
+}
+
+function connectToSocket(user) {
+  return dispatch => {
+    dispatch({
+      type: `${REDUX_CONST.CONNECT_TO_SOCKET}_PENDING`
+    });
+    SocketIO.connect(user);
   };
 }

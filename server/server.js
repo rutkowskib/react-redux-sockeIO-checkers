@@ -6,6 +6,7 @@ import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 import passport from 'passport';
 import passportJwt, {authenticateWithToken} from './passportJWT';
+import {createSocket} from './controllers/socketIO.controller';
 
 // Webpack Requirements
 import webpack from 'webpack';
@@ -148,6 +149,9 @@ app.use((req, res, next) => {
       .catch((error) => next(error));
   });
 });
+
+// start socketIO
+createSocket();
 
 // start app
 app.listen(serverConfig.port, (error) => {
